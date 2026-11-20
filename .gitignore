@@ -1,0 +1,8 @@
+# Von Visual Studio / dotnet erzeugt – nicht hochladen
+bin/
+obj/
+.vs/
+*.user
+
+# Fertige .exe ist zu gross für das Repository (68 MB) → über GitHub "Releases" hochladen
+publish/
