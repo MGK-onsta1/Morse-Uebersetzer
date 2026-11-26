@@ -14,7 +14,7 @@ Ein Windows-Programm (C#, WinForms, .NET 8) zum **Übersetzen**, **Lernen** und 
 
 ## Download
 
-**[⬇ Morse-Uebersetzer.zip herunterladen](https://github.com/MGK-onsta1/Morse-Uebersetzer/raw/main/Download/Morse-Uebersetzer.zip)** (66 MB, Version 1.1). Die Datei entpacken und `Morse.exe` starten. Man muss nichts installieren.
+**[⬇ Morse-Uebersetzer.zip herunterladen](https://github.com/MGK-onsta1/Morse-Uebersetzer/raw/main/Download/Morse-Uebersetzer.zip)** (66 MB, Version 1.1.1). Die Datei entpacken und `Morse.exe` starten. Man muss nichts installieren.
 Wie es funktioniert, steht in der **[Anleitung](ANLEITUNG.md)**.
 
 ## Dokumentation
