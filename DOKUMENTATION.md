@@ -105,7 +105,7 @@ Danach will ich mit Freunden einen ganzen Morse-Chat machen.
 
 ## Heute
 
-Heute habe ich den Chat getestet. Meine Freunde waren nicht da, darum habe ich mit der KI einen „Test-Freund“ gebaut, der sich wie ein zweiter Laptop über WLAN verbindet. Den Browser-Chat und den Internet-Link habe ich im Browser ausprobiert. Die Nachrichten kamen überall an. Neu kann man im Chat **direkt mit der Leertaste morsen**: Haken setzen, morsen, mit der Rücktaste löschen und mit Enter senden. Am Schluss habe ich die Version 1.1 als neue `Morse.exe` gemacht und auf GitHub hochgeladen. Dabei hatte ich wieder grosse Hilfe von KI.
+Heute habe ich den Chat getestet. Meine Freunde waren nicht da, darum habe ich mit der KI einen „Test-Freund“ gebaut, der sich wie ein zweiter Laptop über WLAN verbindet. Den Browser-Chat und den Internet-Link habe ich im Browser ausprobiert. Die Nachrichten kamen überall an. Neu kann man im Chat **direkt mit der Leertaste morsen**: Haken setzen, morsen, mit der Rücktaste löschen und mit Enter senden. Am Schluss habe ich die Version 1.1 als neue `Morse.exe` gemacht und auf GitHub hochgeladen. Dabei hat mir **Claude** (eine KI von Anthropic) sehr geholfen.
 
 Ich hatte einige Fehler: Bei einem falschen Passwort hat man bei mir nichts gesehen. Im Browser stand oben nicht, wer neu dazugekommen ist. Wenn das Programm zweimal offen war, kam eine englische Fehlermeldung. Im kleinen Fenster hat eine Checkbox den Knopf „Als Text…“ verdeckt. Alle vier Fehler sind behoben.
 
