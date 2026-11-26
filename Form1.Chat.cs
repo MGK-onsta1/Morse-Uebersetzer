@@ -26,7 +26,8 @@ namespace Morse
         private TextBox txtChatName = null!, txtChatPassword = null!, txtHost = null!, txtWebLinks = null!, txtChatInput = null!;
         private Button btnOnline = null!, btnConnect = null!, btnQr = null!, btnTunnel = null!, btnSend = null!;
         private Label lblMyIp = null!, lblChatPreview = null!;
-        private CheckBox chkLanVisible = null!, chkWeb = null!, chkPlayIncoming = null!;
+        private CheckBox chkLanVisible = null!, chkWeb = null!, chkPlayIncoming = null!, chkChatKey = null!;
+        private readonly List<string> _chatKeyTokens = new();   // mit der Leertaste gemorste Buchstaben-Codes
         private ListBox listFound = null!, listPeers = null!;
         private RichTextBox rtbChat = null!;
 
@@ -123,7 +124,7 @@ namespace Morse
                 Font = new Font("Segoe UI", 10.5F), DetectUrls = true,
             };
 
-            var bottom = new Panel { Dock = DockStyle.Bottom, Height = 100 };
+            var bottom = new Panel { Dock = DockStyle.Bottom, Height = 132 };
             txtChatInput = new TextBox
             {
                 Location = new Point(0, 8), Width = bottom.Width - 110, Font = new Font("Segoe UI", 11F),
@@ -142,21 +143,23 @@ namespace Morse
                 Font = new Font("Consolas", 10F), ForeColor = Color.DimGray, AutoEllipsis = true,
             };
             chkPlayIncoming = new CheckBox { Text = "Ton bei neuen Nachrichten", Checked = _settings.PlayIncoming, AutoSize = true, Location = new Point(0, 70) };
+            chkChatKey = new CheckBox { Text = "🔑 Mit Leertaste morsen", AutoSize = true, Location = new Point(190, 70) };
             var btnClearHistory = new Button
             {
-                Text = "🗑 Verlauf löschen", Size = new Size(130, 30), Location = new Point(bottom.Width - 130, 64),
+                Text = "🗑 Verlauf löschen", Size = new Size(130, 30), Location = new Point(bottom.Width - 130, 98),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
             };
             var btnExport = new Button
             {
-                Text = "💾 Als Text…", Size = new Size(100, 30), Location = new Point(bottom.Width - 236, 64),
+                Text = "💾 Als Text…", Size = new Size(100, 30), Location = new Point(bottom.Width - 236, 98),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
             };
             var tip = new ToolTip();
             tip.SetToolTip(btnExport, "Den Chatverlauf als .txt-Datei speichern");
+            tip.SetToolTip(chkChatKey, "Leertaste kurz = Punkt, lang = Strich. Rücktaste = letzten Buchstaben löschen, Enter = senden.");
             btnExport.Click += (_, _) => ExportHistory();
             btnClearHistory.Click += (_, _) => ClearHistory();
-            bottom.Controls.AddRange(new Control[] { txtChatInput, btnSend, lblChatPreview, chkPlayIncoming, btnExport, btnClearHistory });
+            bottom.Controls.AddRange(new Control[] { txtChatInput, btnSend, lblChatPreview, chkPlayIncoming, chkChatKey, btnExport, btnClearHistory });
 
             var right = new Panel { Dock = DockStyle.Fill, Padding = new Padding(8, 4, 4, 0) };
             right.Controls.Add(rtbChat);
@@ -188,10 +191,17 @@ namespace Morse
             btnSend.Click += (_, _) => SendChat();
             txtChatInput.KeyDown += (_, e) =>
             {
+                if (e.KeyCode == Keys.Back && chkChatKey.Checked)
+                {
+                    e.SuppressKeyPress = true;
+                    ChatKeyBackspace();
+                    return;
+                }
                 if (e.KeyCode != Keys.Enter) return;
                 e.SuppressKeyPress = true;
                 SendChat();
             };
+            chkChatKey.CheckedChanged += (_, _) => SetChatKeyMode(chkChatKey.Checked);
             txtChatInput.TextChanged += (_, _) => UpdateChatPreview();
             txtChatName.TextChanged += (_, _) => { _settings.ChatName = txtChatName.Text.Trim(); _settings.Save(); };
             chkPlayIncoming.CheckedChanged += (_, _) => { _settings.PlayIncoming = chkPlayIncoming.Checked; _settings.Save(); };
@@ -203,12 +213,14 @@ namespace Morse
                 SystemMessage($"Verbunden mit {p.Name} ({p.Endpoint}).");
                 _web.Notice($"{p.Name} ist dabei.");
                 RefreshPeers();
+                _web.UpdateOnline();
             });
             _node.PeerDisconnected += p => Ui(() =>
             {
                 SystemMessage($"{p.Name} hat die Verbindung getrennt.");
                 _web.Notice($"{p.Name} ist gegangen.");
                 RefreshPeers();
+                _web.UpdateOnline();
             });
             _node.MessageReceived += (p, name, morse) => Ui(() =>
             {
@@ -226,12 +238,14 @@ namespace Morse
                 SystemMessage($"🌐 {c.Name} ist per Browser beigetreten.");
                 _web.Notice($"{c.Name} ist dabei.", except: c);
                 RefreshPeers();
+                _web.UpdateOnline();
             });
             _web.ClientLeft += c => Ui(() =>
             {
                 SystemMessage($"🌐 {c.Name} hat den Browser-Chat verlassen.");
                 _web.Notice($"{c.Name} ist gegangen.");
                 RefreshPeers();
+                _web.UpdateOnline();
             });
             _web.MessageReceived += (c, morse) => Ui(() =>
             {
@@ -317,6 +331,11 @@ namespace Morse
             _node.Name = txtChatName.Text.Trim();
             _node.SetPassword(txtChatPassword.Text);
             try { _node.Start(ChatNode.DefaultPort); }
+            catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
+            {
+                SystemMessage("Konnte nicht online gehen: Der Morse-Übersetzer ist schon in einem anderen Fenster online. Schliesse das andere Fenster.");
+                return false;
+            }
             catch (SocketException ex) { SystemMessage("Konnte nicht online gehen: " + ex.Message); return false; }
 
             SetOnlineUi(true);
@@ -515,6 +534,59 @@ namespace Morse
             _web.Broadcast(_node.Name, morse);
             ChatMessage("Ich", true, morse);
             txtChatInput.Clear();
+            _chatKeyTokens.Clear();
+            _keyer.Reset();
+        }
+
+        // ================================================================ Morsetaste im Chat
+
+        /// <summary>Soll die Leertaste im Chat-Tab gerade morsen? Nicht, wenn man im Namen/Passwort/IP-Feld tippt.</summary>
+        private bool ChatKeyActive
+        {
+            get
+            {
+                if (tabMain.SelectedTab != tabChat || !chkChatKey.Checked) return false;
+                Control? focused = this;
+                while (focused is ContainerControl { ActiveControl: not null } cc) focused = cc.ActiveControl;
+                return focused != txtChatName && focused != txtChatPassword && focused != txtHost;
+            }
+        }
+
+        private void SetChatKeyMode(bool on)
+        {
+            _keyer.Reset();
+            _chatKeyTokens.Clear();
+            txtChatInput.Clear();
+            txtChatInput.ReadOnly = on;   // im Morse-Modus kommt der Text nur von der Leertaste
+            txtChatInput.BackColor = on ? Color.FromArgb(255, 250, 225) : SystemColors.Window;
+            txtChatInput.PlaceholderText = on
+                ? "LEERTASTE: kurz = ·  lang = −   Rücktaste = löschen, Enter = senden"
+                : "Text oder Morsecode eingeben, Enter = senden";
+            txtChatInput.Focus();
+        }
+
+        /// <summary>Ein Buchstabe oder eine Wortpause ("/") wurde gemorst.</summary>
+        private void ChatKeyToken(string token)
+        {
+            if (token == "/" && (_chatKeyTokens.Count == 0 || _chatKeyTokens[^1] == "/")) return;
+            _chatKeyTokens.Add(token);
+            ShowChatKeyInput("");
+        }
+
+        private void ChatKeyBackspace()
+        {
+            if (_keyer.CurrentCode.Length > 0) _keyer.Reset();
+            else if (_chatKeyTokens.Count > 0) _chatKeyTokens.RemoveAt(_chatKeyTokens.Count - 1);
+            ShowChatKeyInput("");
+        }
+
+        /// <summary>Schreibt die gemorsten Buchstaben ins Eingabefeld; der gerade entstehende Code steht in der Vorschau.</summary>
+        private void ShowChatKeyInput(string current)
+        {
+            if (!txtChatInput.Focused) txtChatInput.Focus();   // damit Enter wirklich sendet
+            txtChatInput.Text = string.Join(" ", _chatKeyTokens);
+            txtChatInput.SelectionStart = txtChatInput.TextLength;
+            if (current.Length > 0) lblChatPreview.Text = $"⌨ {MorseTable.Pretty(current)}   → {MorseTable.MorseToText(txtChatInput.Text)}";
         }
 
         private void RefreshPeers()

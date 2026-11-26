@@ -181,6 +181,11 @@ namespace Morse
                     }
                 }
                 catch (Exception) { }
+
+                // Der andere hat die Verbindung zugemacht, bevor er „hallo“ sagen konnte.
+                // Das passiert vor allem, wenn sein Passwort nicht zu unserem passt.
+                if (reason == null && Name == null)
+                    reason = $"Verbindung zu {Endpoint} abgebrochen – habt ihr beide dasselbe Passwort?";
                 Close();
                 _node.OnClosed(this, reason);
             }

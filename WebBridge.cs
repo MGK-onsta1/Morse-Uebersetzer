@@ -79,6 +79,14 @@ namespace Morse
             foreach (var c in Clients.Where(c => c != except)) _ = c.SendAsync(new ChatNode.Packet("sys", "", text));
         }
 
+        /// <summary>Schickt jedem Browser-Freund die aktuelle Liste, wer gerade online ist.</summary>
+        public void UpdateOnline()
+        {
+            var names = OnlineNames().Distinct().ToList();
+            foreach (var c in Clients)
+                _ = c.SendAsync(new ChatNode.Packet("online", "", string.Join(", ", names.Where(n => n != c.Name))));
+        }
+
         private async Task AcceptLoop(TcpListener listener, CancellationToken ct)
         {
             try

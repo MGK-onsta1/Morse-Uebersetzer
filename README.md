@@ -9,12 +9,12 @@ Ein Windows-Programm (C#, WinForms, .NET 8) zum **Übersetzen**, **Lernen** und 
 - **Übersetzer:** Text ↔ Morse, mit Ton zum Anhören
 - **Leertasten-Eingabe:** selbst morsen (kurz = Punkt, lang = Strich)
 - **Lern-Modus:** einzelne Zeichen und ganze Wörter in 5 Stufen, der Punktestand wird gespeichert
-- **Chat:** über WLAN, im Handy-Browser (QR-Code) oder über das Internet, mit verschlüsselten Nachrichten
+- **Chat:** über WLAN, im Handy-Browser (QR-Code) oder über das Internet, mit verschlüsselten Nachrichten; man kann auch direkt mit der Leertaste in den Chat morsen
 - **Ton-Einstellungen:** Tempo, Tonhöhe, Lautstärke und längere Pausen zum Lernen
 
 ## Download
 
-**[⬇ Morse-Uebersetzer.zip herunterladen](https://github.com/MGK-onsta1/Morse-Uebersetzer/raw/main/Download/Morse-Uebersetzer.zip)** (63 MB). Die Datei entpacken und `Morse.exe` starten. Man muss nichts installieren.
+**[⬇ Morse-Uebersetzer.zip herunterladen](https://github.com/MGK-onsta1/Morse-Uebersetzer/raw/main/Download/Morse-Uebersetzer.zip)** (66 MB, Version 1.1). Die Datei entpacken und `Morse.exe` starten. Man muss nichts installieren.
 Wie es funktioniert, steht in der **[Anleitung](ANLEITUNG.md)**.
 
 ## Dokumentation

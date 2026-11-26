@@ -213,7 +213,8 @@
         /// <summary>Soll die Leertaste gerade als Morsetaste dienen?</summary>
         private bool SpaceIsMorseKey =>
             tabMain.SelectedTab == tabKey ||
-            (tabMain.SelectedTab == tabLearn && IsKeyMode);
+            (tabMain.SelectedTab == tabLearn && IsKeyMode) ||
+            ChatKeyActive;
 
         private void Form1_KeyDown(object? sender, KeyEventArgs e)
         {
@@ -269,7 +270,11 @@
         private void Keyer_SymbolAdded(char symbol)
         {
             string pretty = MorseTable.Pretty(_keyer.CurrentCode);
-            if (tabMain.SelectedTab == tabKey)
+            if (ChatKeyActive)
+            {
+                ShowChatKeyInput(_keyer.CurrentCode);
+            }
+            else if (tabMain.SelectedTab == tabKey)
             {
                 lblCurrentCode.Text = pretty;
                 lblKeyState.Text = symbol == '.' ? "·  Punkt" : "−  Strich";
@@ -286,7 +291,11 @@
 
         private void Keyer_LetterCompleted(string code)
         {
-            if (tabMain.SelectedTab == tabKey)
+            if (ChatKeyActive)
+            {
+                ChatKeyToken(code);
+            }
+            else if (tabMain.SelectedTab == tabKey)
             {
                 _keyedTokens.Add(code);
                 lblCurrentCode.Text = "";
@@ -317,6 +326,7 @@
 
         private void Keyer_WordCompleted()
         {
+            if (ChatKeyActive) { ChatKeyToken("/"); return; }
             if (tabMain.SelectedTab == tabLearn && cmbLearnMode.SelectedIndex == ModeWordKey
                 && _learnActive && _learnWordCodes.Count > 0)
             {

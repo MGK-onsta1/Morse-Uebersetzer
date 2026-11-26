@@ -581,6 +581,7 @@ function onMessage(ev) {
     if ($("playIn").checked) play(p.M);
     if (document.hidden) document.title = "✉ " + p.N + " – MorseCode";
   } else if (p.T === "sys") sys(p.M);
+  else if (p.T === "online") $("online").textContent = p.M ? "mit " + p.M : "";
 }
 function onClose() {
   joined = false;

@@ -41,6 +41,12 @@
 2. Beim ersten Mal wird das kostenlose Programm *cloudflared* heruntergeladen (ca. 53 MB).
 3. Nach ein paar Sekunden erscheint ein Link `https://….trycloudflare.com`. Schick ihn deinem Freund, oder er scannt den QR-Code.
 
+### Mit der Leertaste morsen
+1. Unten im Chat den Haken bei **„🔑 Mit Leertaste morsen“** setzen.
+2. **Leertaste** kurz = Punkt, lang = Strich. Die Buchstaben erscheinen im Eingabefeld.
+3. **Rücktaste** löscht den letzten Buchstaben, **Enter** sendet.
+4. Zu schnell? Oben **„Pausen ×“** grösser machen, dann hast du mehr Zeit zwischen den Buchstaben.
+
 ### Verlauf
 - Der Chatverlauf wird automatisch gespeichert und ist beim nächsten Start wieder da.
 - **💾 Als Text…** speichert den Verlauf als `.txt`-Datei.
@@ -60,4 +66,6 @@ Im Ordner `%AppData%\Morse` (in die Adresszeile vom Explorer eingeben):
 | Freund wird nicht gefunden | Seid ihr im gleichen WLAN? Manche Schul-WLANs blockieren das. Probiert den **Internet-Link**. |
 | „Falsches Passwort“ | Das Passwort muss genau gleich sein, auch Groß- und Kleinschreibung. |
 | Kein Ton | Lautstärke oben und am PC prüfen und auf **🔊 Test** klicken. |
-| Leertaste macht nichts | Im Lern-Modus zuerst **Start / Weiter** klicken. |
+| Leertaste macht nichts | Im Lern-Modus zuerst **Start / Weiter** klicken. Im Chat den Haken **„Mit Leertaste morsen“** setzen. |
+| „Verbindung abgebrochen – habt ihr beide dasselbe Passwort?“ | Jemand hat es mit einem anderen Passwort versucht. Vergleicht das Passwort. |
+| „Schon in einem anderen Fenster online“ | Das Programm läuft zweimal. Schliesse ein Fenster. |

@@ -71,6 +71,47 @@ Form1 (Oberfläche)
 - **Pausen ×:** Nur die Pausen zwischen Buchstaben und Wörtern werden länger. Die Punkte und Striche bleiben schnell. Das heisst **Farnsworth-Methode**, damit lernt man den „Klang“ der Buchstaben.
 - **Wörter:** `LearnTrainer.Words` ist eine Wortliste. `WordsForLevel()` nimmt nur Wörter, deren Buchstaben man in der Stufe schon kann.
 
+## ChatNode.cs genau erklärt (AP 4)
+
+So reist eine Nachricht von mir zu meinem Freund:
+
+```
+"SOS"  →  "... --- ..."  →  Packet("msg", "kosta", "... --- ...")  →  JSON  →  verschlüsselt  →  Base64-Zeile  →  TCP  →  Freund
+```
+
+**1. Verbinden.** `Start(port)` öffnet einen `TcpListener`: Das Programm wartet auf Port 47800, ob jemand anklopft.
+`ConnectAsync(ip, port)` klopft selbst bei einem Freund an. In beiden Fällen entsteht ein `Peer`, das ist **eine Verbindung zu einem Freund**.
+
+**2. Hallo sagen.** Gleich nach dem Verbinden schickt jeder ein `Packet("hello", Name, "")`.
+Erst wenn das „Hallo“ des Freundes ankommt und sich **entschlüsseln** lässt, ist er wirklich drin (`PeerConnected`).
+
+**3. Ein Paket.** `record Packet(string T, string N, string M)`:
+- `T` = Typ (`"hello"` oder `"msg"`)
+- `N` = Name vom Absender
+- `M` = die Nachricht als Morsecode
+
+**4. Der Schlüssel.** `DeriveKey(passwort)` macht aus dem Passwort mit **PBKDF2** einen Schlüssel aus 32 Bytes.
+Es rechnet dafür 100 000 Mal hin und her, damit man Passwörter nicht schnell durchprobieren kann.
+
+**5. Verschlüsseln** (`Encrypt`):
+- Das Paket wird zu JSON, also zu Bytes.
+- Ein **Nonce** (12 zufällige Bytes) sorgt dafür, dass dieselbe Nachricht jedes Mal anders aussieht.
+- **AES-GCM** verschlüsselt die Bytes und macht einen **Tag** (16 Bytes). Das ist wie ein Siegel: Wurde etwas verändert oder ist das Passwort falsch, passt das Siegel nicht.
+- Nonce + Tag + verschlüsselte Bytes werden mit **Base64** zu Text und als **eine Zeile** verschickt.
+
+**6. Empfangen** (`Peer.RunAsync`): Eine Schleife liest Zeile für Zeile (`ReadLineAsync`) und ruft `Decrypt` auf.
+Gibt `Decrypt` `null` zurück, war das Passwort falsch → Verbindung zu.
+
+**7. An alle schicken.** `Broadcast` geht durch alle `Peers` und schickt jedem dasselbe Paket.
+
+**Neu (26.11.):** Wenn ein Freund die Verbindung zumacht, bevor er „Hallo“ gesagt hat, zeigt das Programm jetzt:
+„Verbindung abgebrochen – habt ihr beide dasselbe Passwort?“ Vorher hat man nichts gesehen.
+
+### Teste dich selbst
+- Warum braucht jede Nachricht ein neues, zufälliges Nonce?
+- Was passiert in `RunAsync`, wenn mein Freund ein anderes Passwort hat?
+- Wo steht der Port 47800, und was müsste ich ändern, damit das Programm Port 48000 benutzt?
+
 ---
 
 ## Deine Aufgabe (ohne KI!)
@@ -85,5 +126,10 @@ Such dir **eine** Aufgabe aus und mach sie selbst:
    *Tipp:* `Form1.Designer.cs`, suche nach `numWpm.Value`.
 4. **Schneller weiter:** Nach einer richtigen Antwort soll das nächste Zeichen schon nach 0,8 Sekunden kommen.
    *Tipp:* `Form1.cs`, suche nach `timerLearnNext.Interval`.
+
+5. **ChatNode: eigene Meldung (AP 4):** Wenn ein Freund mit falschem Passwort kommt, steht „…abgelehnt: falsches Passwort.“ im Chat. Schreib einen eigenen, freundlicheren Satz.
+   *Tipp:* `ChatNode.cs`, suche nach `falsches Passwort`.
+6. **ChatNode: Name begrenzen (AP 4):** Ein Freund soll höchstens 20 Zeichen als Namen haben.
+   *Tipp:* `ChatNode.cs`, in `OnPacket` steht `peer.Name = packet.N;`. Schau dir an, wie `WebBridge.cs` das mit `Math.Min` macht.
 
 Danach mit **F5** starten und schauen, ob es funktioniert.
