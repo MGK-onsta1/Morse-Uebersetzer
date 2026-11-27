@@ -18,7 +18,7 @@ Dieses Programm habe ich mit grosser Hilfe von **Claude** (einer KI von Anthropi
 
 ## Download
 
-**[⬇ Morse-Uebersetzer.zip herunterladen](https://github.com/MGK-onsta1/Morse-Uebersetzer/raw/main/Download/Morse-Uebersetzer.zip)** (66 MB, Version 1.1.1). Die Datei entpacken und `Morse.exe` starten. Man muss nichts installieren.
+**[⬇ Morse-Uebersetzer.zip herunterladen](https://github.com/MGK-onsta1/Morse-Uebersetzer/raw/main/Download/Morse-Uebersetzer.zip)** (66 MB, Version 1.2). Die Datei entpacken und `Morse.exe` starten. Man muss nichts installieren.
 Wie es funktioniert, steht in der **[Anleitung](ANLEITUNG.md)**.
 
 ## Dokumentation

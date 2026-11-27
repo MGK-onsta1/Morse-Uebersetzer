@@ -129,9 +129,44 @@ Als Nächstes will ich den Chat endlich mit echten Freunden und Handys testen. A
 
 ## Nächstes Mal (4 Arbeitspakete)
 
-- [ ] **Praxistest mit Freunden:** Chat über WLAN, Handy-Browser und Internet-Link mit echten Geräten testen und Fehler notieren
-- [ ] **Fehler beheben:** die gefundenen Fehler reparieren und eine neue `.exe` hochladen
-- [ ] **Code verstehen:** die 3 Testfragen zu `ChatNode.cs` in [CODE-ERKLAERUNG.md](CODE-ERKLAERUNG.md) beantworten
-- [ ] **Selbst ändern:** Aufgabe 5 oder 6 aus der Code-Erklärung ohne KI lösen
+- [x] **Praxistest mit Freunden:** Chat über WLAN, Handy-Browser und Internet-Link mit echten Geräten testen und Fehler notieren *(mit meinem iPhone, ohne Freunde)*
+- [x] **Fehler beheben:** die gefundenen Fehler reparieren und eine neue `.exe` hochladen
+- [x] **Code verstehen:** die 3 Testfragen zu `ChatNode.cs` in [CODE-ERKLAERUNG.md](CODE-ERKLAERUNG.md) beantworten *(die Antworten hat Claude geschrieben, nicht ich)*
+- [x] **Selbst ändern:** Aufgabe 5 oder 6 aus der Code-Erklärung ohne KI lösen *(Aufgabe 6 hat Claude gelöst, also nicht ohne KI)*
 
 Danach will ich mit Freunden einen ganzen Morse-Chat nur mit der Leertaste machen.
+
+# 27.11.2026 | Projekt: Morse-Übersetzer
+
+## Heute
+
+Heute habe ich den Chat zum ersten Mal mit einem **echten Handy** getestet (mein iPhone mit Safari). Über das Schul-WLAN hat es nicht geklappt: Weder der WLAN-Link noch der Internet-Link sind angekommen. Das Schul-WLAN lässt Handy und Laptop nicht direkt miteinander reden und blockiert auch WebSockets. Mit **mobilen Daten** und dem **Internet-Link** hat es dann funktioniert: Ich habe vom Handy „HALLO TEST“ geschickt und am Laptop geantwortet. Dabei hat mir **Claude** (eine KI von Anthropic) sehr geholfen.
+
+Ich hatte drei Fehler: Im QR-Fenster war der lange Internet-Link abgeschnitten und hat den Knopf „Schließen“ verdeckt. Im Programm stand nirgends, dass Schul-WLANs das blockieren. Und am Handy stand nur „Keine Verbindung“ ohne Tipp. Alle drei sind behoben. Neu kann man auch auf den Link klicken, dann wird er kopiert. Danach habe ich die Version 1.2 als neue `Morse.exe` hochgeladen.
+
+**Ehrlich:** Die 3 Testfragen zu `ChatNode.cs` und die Aufgabe 6 (Name höchstens 20 Zeichen) hat **Claude** gemacht, nicht ich. Die Antworten stehen in [CODE-ERKLAERUNG.md](CODE-ERKLAERUNG.md). Ich muss sie noch selbst durchlesen und verstehen.
+
+Gelernt habe ich:
+
+* Schul-WLANs haben oft „Client-Isolation“. Dann können sich Geräte im gleichen WLAN nicht sehen.
+* Mit mobilen Daten geht das Handy direkt ins Internet und umgeht so die Sperre im Schul-WLAN.
+* `name[..Math.Min(name.Length, 20)]` schneidet einen Text nach 20 Zeichen ab.
+
+**Status:** fertig – der Handy-Chat klappt über den Internet-Link mit mobilen Daten. Mit Freunden habe ich es noch nicht getestet.
+
+![Screenshot: Chat mit dem Handy](screenshot-handy.jpg)
+
+## Zusammenfassung
+
+Alle 4 Arbeitspakete sind erledigt, aber nicht alle von mir: Praxistest und Fehler beheben habe ich mit Claude gemacht. Die Testfragen und Aufgabe 6 hat Claude allein gelöst. Version 1.2 kann man auf GitHub herunterladen.
+
+## Ausblick
+
+Als Nächstes will ich die Antworten von Claude selbst verstehen und eine Aufgabe wirklich ohne KI lösen. Und ich will den Chat endlich mit Freunden ausprobieren.
+
+## Nächstes Mal (4 Arbeitspakete)
+
+- [ ] **Antworten verstehen:** die 3 Antworten von Claude in eigenen Worten erklären
+- [ ] **Selbst ändern:** Aufgabe 5 (eigene Meldung bei falschem Passwort) wirklich ohne KI lösen
+- [ ] **Test mit Freunden:** mit 2 Freunden über den Internet-Link chatten (mit mobilen Daten)
+- [ ] **Fehler notieren:** alles aufschreiben, was beim Test mit Freunden nicht klappt
